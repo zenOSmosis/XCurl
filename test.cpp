@@ -1,3 +1,6 @@
+/**
+* Compile: clear && g++ test.cpp -std=c++11 -l curl -o test && ./test
+*/
 #include <stdio.h>
 #include <curl/curl.h>
 
@@ -14,7 +17,11 @@ class XCurl
 {
 	private: CURL *_curl;
 
-	public: XCurl(char uri[XCURL_URI_LENGTH]) {
+	/**
+	* The constructor.
+	*/
+	public: XCurl(char uri[XCURL_URI_LENGTH])
+	{
 		printf("Initializing curl\n");
 
 		this->_curl = curl_easy_init();
@@ -26,14 +33,39 @@ class XCurl
 		this->setURI(uri);
 	}
 
-	public: bool setURI(char uri[XCURL_URI_LENGTH])
+	/**
+	* The destructor.
+	*/
+	public: ~XCurl()
 	{
-		curl_easy_setopt(this->_curl, CURLOPT_URL, uri);
+		printf("Closing XCurl\n");
 
-		//return
+		//delete this->_curl; // Clean up
 	}
 
-	public: bool performCurl()
+	/**
+	* Ref: http://curl.haxx.se/libcurl/c/curl_easy_setopt.html
+	*/
+	public: bool setOpt()
+	{
+
+	}
+
+	public: char getOpt()
+	{
+
+	}
+
+	public: bool setURI(char uri[XCURL_URI_LENGTH])
+	{
+		if (curl_easy_setopt(this->_curl, CURLOPT_URL, uri)) {
+			return true;
+		}
+
+		return false;
+	}
+
+	public: bool exec()
 	{
 
 		if (this->_curl) {
@@ -43,6 +75,8 @@ class XCurl
 
 			curl_easy_cleanup(this->_curl);
 		}
+
+		delete this; // Automatically clean up
 	}
 };
 
@@ -51,9 +85,8 @@ int main()
 	char uri[128] = "http://zenosmosis.com";
 	XCurl *xCurl = new XCurl(uri);
 
-	xCurl->performCurl();
-
-	delete xCurl; // Clean up
+	xCurl->exec();
+	//xCurl->exec();
 
 	//return 0;
 }
