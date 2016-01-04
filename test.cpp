@@ -7,16 +7,14 @@
 
 using namespace std;
 
+const int XCURL_URI_LENGTH = 128;
+
 //TODO: Include ability to process stream data
 class XCurl
 {
-	//public:
-		
-		//XCurl(); // This is the constructor
 	private: CURL *_curl;
-			//string _uri;
 
-	public: XCurl(char uri[128]) {
+	public: XCurl(char uri[XCURL_URI_LENGTH]) {
 		printf("Initializing curl\n");
 
 		this->_curl = curl_easy_init();
@@ -28,7 +26,7 @@ class XCurl
 		this->setURI(uri);
 	}
 
-	public: bool setURI(char uri[128])
+	public: bool setURI(char uri[XCURL_URI_LENGTH])
 	{
 		curl_easy_setopt(this->_curl, CURLOPT_URL, uri);
 
