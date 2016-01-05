@@ -84,6 +84,9 @@ class XCurl
 	{
 
 		if (this->_curl) {
+			/* temporarily outputting response headers */
+			curl_easy_setopt(this->_curl, CURLOPT_HEADER, true);
+
 			CURLcode res;
 
 			res = curl_easy_perform(this->_curl);
