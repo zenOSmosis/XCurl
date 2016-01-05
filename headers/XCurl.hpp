@@ -87,6 +87,20 @@ class XCurl
 		return false;
 	}
 
+	/**
+	* Ref: http://curl.haxx.se/libcurl/c/CURLOPT_USERPWD.html
+	*/
+	public: bool setUserPassword(string username, string password)
+	{
+		string userpass = username + ":" + password;
+
+		if (curl_easy_setopt(this->_curl, CURLOPT_USERPWD, userpass.c_str())) {
+			return true;
+		}
+
+		return false;
+	}
+
 	public: void exec()
 	{
 

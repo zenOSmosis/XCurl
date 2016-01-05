@@ -12,6 +12,7 @@ int main()
 	XCurl *xCurl = new XCurl("http://localhost/XCurl/web/index.php");
 
 	xCurl->setUserAgent("Mozilla");
+	xCurl->setUserPassword("admin", "password");
 	xCurl->setRequestHeader("Test", "12345");
 	xCurl->setRequestMethod("POST");
 
