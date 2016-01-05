@@ -21,6 +21,7 @@ template < class T, class Alloc = allocator<T> > class list;
 class XCurl
 {
 	private: CURL *_curl;
+			 struct curl_slist *_requestHeaders; // Ref: http://curl.haxx.se/libcurl/c/httpcustomheader.html
 
 	/**
 	* The constructor.
@@ -46,6 +47,19 @@ class XCurl
 		printf("Closing XCurl\n");
 
 		//delete this->_curl; // Clean up
+	}
+
+	public: bool setRequestHeader(string key, string value)
+	{
+		string concat = key + ": " + value;
+
+		this->_requestHeaders = curl_slist_append(this->_requestHeaders, concat.c_str());
+		//printf("%s", concat.c_str());
+
+		//printf(this->_requestHeaders);
+		curl_easy_setopt(this->_curl, CURLOPT_HTTPHEADER, this->_requestHeaders);
+
+		return true;
 	}
 
 	/**

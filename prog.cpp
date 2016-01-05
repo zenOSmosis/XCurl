@@ -12,7 +12,9 @@ int main()
 	char uri[128] = "http://zenosmosis.com";
 	XCurl *xCurl = new XCurl(uri);
 
-	xCurl->exec();
+	xCurl->setRequestHeader("test", "123");
+
+	//xCurl->exec();
 	//xCurl->exec();
 
 	//char *info[128];
@@ -23,7 +25,7 @@ int main()
 	printf("\n");
 	printf("%f", xCurl->getTotalTime());
 	printf("\n");
-	printf("%i", xCurl->getSizeDownload());
+	printf("%i", xCurl->getDownloadSize());
 	printf("\n");
 
 	//xCurl->getInfo();
