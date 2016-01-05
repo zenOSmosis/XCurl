@@ -14,6 +14,7 @@ int main()
 
 	xCurl->setUserAgent("Mozilla");
 	xCurl->setRequestHeader("Test", "12345");
+	xCurl->setRequestMethod("POST");
 
 	xCurl->exec();
 	//xCurl->exec();

@@ -1,6 +1,8 @@
 <?php
 header('Test: 123');
 
+echo "Request method: " . $_SERVER['REQUEST_METHOD'] . PHP_EOL;
+
 // Print request headers
 $headers = array();
 foreach($_SERVER as $key => $value) {

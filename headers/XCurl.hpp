@@ -76,6 +76,15 @@ class XCurl
 
 	}*/
 
+	public: bool setRequestMethod(string requestMethod)
+	{
+		if (curl_easy_setopt(this->_curl, CURLOPT_CUSTOMREQUEST, requestMethod.c_str())) {
+			return true;
+		}
+
+		return false;
+	}
+
 	public: bool setURL(string url)
 	{
 		if (curl_easy_setopt(this->_curl, CURLOPT_URL, url.c_str())) {
