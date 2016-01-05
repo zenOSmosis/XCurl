@@ -39,7 +39,8 @@ class XCurl
 	{
 		printf("Closing XCurl\n");
 
-		//delete this->_curl; // Clean up
+		/* free the custom headers */ 
+    	curl_slist_free_all(this->_requestHeaders);
 	}
 
 	public: bool setRequestHeader(string key, string value)
