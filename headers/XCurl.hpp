@@ -94,13 +94,13 @@ class XCurl
 	}
 
 	// TODO: Copy the pointer value and return
-	public: std::string getEffectiveURL()
+	public: string getEffectiveURL()
 	{
 		char *info[128];
 
 		curl_easy_getinfo(this->_curl, CURLINFO_EFFECTIVE_URL, &info);
 
-		return std::string(*info);
+		return string(*info);
 	}
 
 	public: long getResponseCode()
