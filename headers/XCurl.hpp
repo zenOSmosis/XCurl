@@ -10,13 +10,6 @@
 
 using namespace std;
 
-const int XCURL_URI_MAX_LENGTH = 128;
-
-// Experimenting with variable types
-#include <map>
-// Ref: http://www.cplusplus.com/reference/list/list
-template < class T, class Alloc = allocator<T> > class list;
-
 // TODO: Include ability to process stream data
 class XCurl
 {
@@ -26,7 +19,7 @@ class XCurl
 	/**
 	* The constructor.
 	*/
-	public: XCurl(char uri[XCURL_URI_MAX_LENGTH])
+	public: XCurl(string uri)
 	{
 		printf("Initializing curl\n");
 
@@ -65,19 +58,19 @@ class XCurl
 	/**
 	* Ref: http://curl.haxx.se/libcurl/c/curl_easy_setopt.html
 	*/
-	public: bool setOpt()
+	/*public: bool setOpt()
 	{
 
-	}
+	}*/
 
-	public: char getOpt()
+	/*public: char getOpt()
 	{
 
-	}
+	}*/
 
-	public: bool setURI(char uri[XCURL_URI_MAX_LENGTH])
+	public: bool setURI(string uri)
 	{
-		if (curl_easy_setopt(this->_curl, CURLOPT_URL, uri)) {
+		if (curl_easy_setopt(this->_curl, CURLOPT_URL, uri.c_str())) {
 			return true;
 		}
 
@@ -99,13 +92,13 @@ class XCurl
 	}
 
 	// TODO: Copy the pointer value and return
-	public: char* getInfo()
+	public: std::string getInfo()
 	{
 		char *info[128];
 
 		curl_easy_getinfo(this->_curl, CURLINFO_EFFECTIVE_URL, &info);
 
-		return *info;
+		return std::string(*info);
 	}
 
 	public: long getResponseCode()

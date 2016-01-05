@@ -14,12 +14,12 @@ int main()
 
 	xCurl->setRequestHeader("test", "123");
 
-	//xCurl->exec();
+	xCurl->exec();
 	//xCurl->exec();
 
 	//char *info[128];
 	printf("\n");
-	printf("%s", xCurl->getInfo());
+	printf("%s", xCurl->getInfo().c_str());
 	printf("\n");
 	printf("%ld", xCurl->getResponseCode());
 	printf("\n");
