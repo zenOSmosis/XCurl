@@ -19,7 +19,7 @@ class XCurl
 	/**
 	* The constructor.
 	*/
-	public: XCurl(string uri)
+	public: XCurl(string url)
 	{
 		printf("Initializing curl\n");
 
@@ -29,7 +29,7 @@ class XCurl
 			printf("Initialized curl\n");
 		}
 
-		this->setURI(uri);
+		this->setURL(url);
 	}
 
 	/**
@@ -50,9 +50,11 @@ class XCurl
 		//printf("%s", concat.c_str());
 
 		//printf(this->_requestHeaders);
-		curl_easy_setopt(this->_curl, CURLOPT_HTTPHEADER, this->_requestHeaders);
+		if (curl_easy_setopt(this->_curl, CURLOPT_HTTPHEADER, this->_requestHeaders)) {
+			return true;
+		}
 
-		return true;
+		return false;
 	}
 
 	/**
@@ -68,9 +70,9 @@ class XCurl
 
 	}*/
 
-	public: bool setURI(string uri)
+	public: bool setURL(string url)
 	{
-		if (curl_easy_setopt(this->_curl, CURLOPT_URL, uri.c_str())) {
+		if (curl_easy_setopt(this->_curl, CURLOPT_URL, url.c_str())) {
 			return true;
 		}
 

@@ -9,8 +9,7 @@
 
 int main()
 {
-	char uri[128] = "http://zenosmosis.com";
-	XCurl *xCurl = new XCurl(uri);
+	XCurl *xCurl = new XCurl("http://zenosmosis.com");
 
 	xCurl->setRequestHeader("test", "123");
 
@@ -36,4 +35,6 @@ int main()
 	// std::cout << pre::json::xCurl->getInfo() << std::endl;
 
 	//return 0;
+
+	delete xCurl; // Cleanup
 }
