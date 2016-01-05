@@ -1,11 +1,10 @@
 // Motivation for doing this: Because stream processing via PHP is probably very inefficent.
 // Plus, I want to get better at C++.
 
+//Compile & debug: clear && g++ prog.cpp -std=c++11 -l curl -o test && ./test
+
 #include <stdio.h>
 #include "headers/XCurl.hpp"
-
-#include <iostream>
-//#include <pre/json/to_json.hpp>
 
 int main()
 {

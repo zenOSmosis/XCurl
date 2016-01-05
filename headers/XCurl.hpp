@@ -1,13 +1,5 @@
-/**
-* Compile & debug: clear && g++ prog.cpp -std=c++11 -l curl -o test && ./test
-
-*/
-#include <stdio.h>
 #include <curl/curl.h>
-
 #include <string>
-#include <sstream>
-#include <iostream>
 
 using namespace std;
 
