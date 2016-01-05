@@ -58,6 +58,11 @@ class XCurl
 		return false;
 	}
 
+	public: bool setUserAgent(string value)
+	{
+		return this->setRequestHeader("User-Agent", value);
+	}
+
 	/**
 	* Ref: http://curl.haxx.se/libcurl/c/curl_easy_setopt.html
 	*/
