@@ -1,5 +1,6 @@
 /**
-* Compile: clear && g++ test.cpp -std=c++11 -l curl -o test && ./test
+* Compile & debug: clear && g++ prog.cpp -std=c++11 -l curl -o test && ./test
+
 */
 #include <stdio.h>
 #include <curl/curl.h>
