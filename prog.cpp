@@ -9,9 +9,11 @@
 
 int main()
 {
-	XCurl *xCurl = new XCurl("http://zenosmosis.com");
+	//XCurl *xCurl = new XCurl("http://zenosmosis.com");
+	XCurl *xCurl = new XCurl("http://localhost/XCurl/web/index.php");
 
-	xCurl->setRequestHeader("test", "123");
+	xCurl->setRequestHeader("User-Agent", "123");
+	xCurl->setRequestHeader("Test", "12345");
 
 	xCurl->exec();
 	//xCurl->exec();
