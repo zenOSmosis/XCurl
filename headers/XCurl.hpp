@@ -94,7 +94,7 @@ class XCurl
 		return false;
 	}
 
-	public: bool exec()
+	public: void exec()
 	{
 
 		if (this->_curl) {
