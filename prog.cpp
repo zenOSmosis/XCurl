@@ -22,7 +22,7 @@ int main()
 	printf("\n");
 	printf("Effective URL: %s", xCurl->getEffectiveURL().c_str());
 	printf("\n");
-	printf("Received header size: %i", xCurl->getReceivedHeaderSize());
+	printf("Received header size: %li", xCurl->getReceivedHeaderSize());
 	printf("\n");
 	printf("Response code: %ld", xCurl->getResponseCode());
 	printf("\n");
