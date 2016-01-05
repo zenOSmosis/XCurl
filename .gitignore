@@ -1,3 +1,6 @@
+# Ignore binaries
+xcurl
+
 ### IGNORE MAC FINDER INCLUDES ###
 
 .DS_Store
