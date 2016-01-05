@@ -92,7 +92,7 @@ class XCurl
 	}
 
 	// TODO: Copy the pointer value and return
-	public: std::string getInfo()
+	public: std::string getEffectiveURL()
 	{
 		char *info[128];
 

@@ -19,7 +19,7 @@ int main()
 
 	//char *info[128];
 	printf("\n");
-	printf("%s", xCurl->getInfo().c_str());
+	printf("%s", xCurl->getEffectiveURL().c_str());
 	printf("\n");
 	printf("%ld", xCurl->getResponseCode());
 	printf("\n");
