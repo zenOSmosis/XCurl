@@ -94,6 +94,15 @@ class XCurl
 		//delete this; // Automatically clean up
 	}
 
+	public: long getReceivedHeaderSize()
+	{
+		long sizep;
+
+		curl_easy_getinfo(this->_curl, CURLINFO_HEADER_SIZE, &sizep);
+
+		return sizep;
+	}
+
 	// TODO: Copy the pointer value and return
 	public: string getEffectiveURL()
 	{
