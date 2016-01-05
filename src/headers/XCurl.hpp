@@ -36,7 +36,7 @@ class XCurl
     	curl_slist_free_all(this->_requestHeaders);
 	}
 
-	public: bool setRequestHeader(string key, string value)
+	public: bool addRequestHeader(string key, string value)
 	{
 		string concat = key + ": " + value;
 
@@ -53,7 +53,7 @@ class XCurl
 
 	public: bool setUserAgent(string value)
 	{
-		return this->setRequestHeader("User-Agent", value);
+		return this->addRequestHeader("User-Agent", value);
 	}
 
 	/**

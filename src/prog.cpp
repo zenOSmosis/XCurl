@@ -1,19 +1,17 @@
 // Motivation for doing this: Because stream processing via PHP is probably very inefficent.
 // Plus, I want to get better at C++.
 
-//Compile & debug: clear && g++ prog.cpp -std=c++11 -l curl -o test && ./test
-
 #include <stdio.h>
 #include "headers/XCurl.hpp"
 
 int main()
 {
-	//XCurl *xCurl = new XCurl("http://zenosmosis.com");
-	XCurl *xCurl = new XCurl("http://localhost/XCurl/web/index.php");
+	XCurl *xCurl = new XCurl("http://zenosmosis.com");
+	//XCurl *xCurl = new XCurl("http://localhost/XCurl/web/index.php");
 
 	xCurl->setUserAgent("Mozilla");
 	xCurl->setUserPassword("admin", "password");
-	xCurl->setRequestHeader("Test", "12345");
+	xCurl->addRequestHeader("Test", "12345");
 	xCurl->setRequestMethod("POST");
 
 	xCurl->exec();
