@@ -20,13 +20,15 @@ int main()
 
 	//char *info[128];
 	printf("\n");
-	printf("%s", xCurl->getEffectiveURL().c_str());
+	printf("Effective URL: %s", xCurl->getEffectiveURL().c_str());
 	printf("\n");
-	printf("%ld", xCurl->getResponseCode());
+	printf("Received header size: %i", xCurl->getReceivedHeaderSize());
 	printf("\n");
-	printf("%f", xCurl->getTotalTime());
+	printf("Response code: %ld", xCurl->getResponseCode());
 	printf("\n");
-	printf("%i", xCurl->getDownloadSize());
+	printf("Total time: %f", xCurl->getTotalTime());
+	printf("\n");
+	printf("Download size: %i", xCurl->getDownloadSize());
 	printf("\n");
 
 	//xCurl->getInfo();
