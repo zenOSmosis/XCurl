@@ -15,16 +15,14 @@ class XCurl
 			 struct curl_slist *_requestHeaders;
 			 void (*_writeFunction)(string chunk);
 
-	public: void setWriteFunction(void (*callback)(string chunk))
-	{
-		this->_writeFunction = callback;
-	}
-
 	/**
 	* The constructor.
 	*/
 	public: XCurl(string url)
 	{
+		// Initialize the write callback
+		this->setWriteFunction(NULL);
+
 		printf("Initializing curl\n");
 
 		curl_global_init(CURL_GLOBAL_ALL);
@@ -36,6 +34,11 @@ class XCurl
 		}
 
 		this->setURL(url);
+	}
+
+	public: void setWriteFunction(void (*callback)(string chunk))
+	{
+		this->_writeFunction = callback;
 	}
 
 	/**
@@ -119,7 +122,9 @@ class XCurl
 	    int realsize=size*nmemb;
 	    string chunk((char*)source_p,realsize);
 	    //printf("%s", chunk.c_str());
-	    ((XCurl*)dest_p)->_writeFunction(chunk.c_str());
+	    if (((XCurl*)dest_p)->_writeFunction) {
+	    	((XCurl*)dest_p)->_writeFunction(chunk.c_str());
+	    }
 
 	    //*((stringstream*)dest_p) << chunk;
 	    return realsize;
