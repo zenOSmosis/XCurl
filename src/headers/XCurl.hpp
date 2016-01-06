@@ -15,6 +15,7 @@ class XCurl
 			 struct curl_slist *_requestHeaders;
 			 void (*_writeFunction)(string chunk, void *pass);
 			 string _writeBuffer;
+			 string _responseHeadersRaw;
 
 	/**
 	* The constructor.
@@ -118,10 +119,32 @@ class XCurl
 		return false;
 	}
 
+	/**
+	* Populates the _responseHeaders.
+	*
+	* TODO: Clear if reusing the connection.
+	*/
+	private: static size_t _execHeaderCallback(char *buffer, size_t size, size_t nitems, void* dest_p)
+	{
+		int realsize=size*nitems;
+
+		/* convert buffer into a string */
+		string chunk((char*)buffer,realsize);
+
+		/* append to _responseHeadersRaw property */
+		((XCurl*)dest_p)->_responseHeadersRaw.append(chunk);
+
+		//printf("%s", chunk.c_str());
+		return nitems * size;
+	}
+
 	// This is the function we pass to LC, which writes the output to a BufferStruct
-	private: static size_t _execWriteCallback (void* source_p,size_t size, size_t nmemb, void* dest_p){
+	private: static size_t _execWriteCallback(void* source_p,size_t size, size_t nmemb, void* dest_p){
 	    int realsize=size*nmemb;
+
+	    /* convert source_p into a string */
 	    string chunk((char*)source_p,realsize);
+
 	    //printf("%s", chunk.c_str());
 	    if (((XCurl*)dest_p)->_writeFunction) {
 	    	((XCurl*)dest_p)->_writeFunction(chunk.c_str(), dest_p);
@@ -138,6 +161,9 @@ class XCurl
 			//curl_easy_setopt(this->_curl, CURLOPT_HEADER, true);
 
 			CURLcode res;
+
+			curl_easy_setopt(this->_curl, CURLOPT_HEADERFUNCTION, &XCurl::_execHeaderCallback);
+			curl_easy_setopt(this->_curl, CURLOPT_HEADERDATA, this);
 
 			// The callback approach below seems to not utilize the correct scope
 			curl_easy_setopt(this->_curl, CURLOPT_WRITEFUNCTION, &XCurl::_execWriteCallback);

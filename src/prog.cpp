@@ -4,11 +4,30 @@
 #include <stdio.h>
 #include "headers/XCurl.hpp"
 
+struct {
+	string body;
+	//string header;
+	int _chunkCount;
+} response;
+
 void writeFunction(string chunk, void *xCurlInstance) {
+	//response._chunkCount++;
+
+	XCurl *xCurl = ((XCurl*)xCurlInstance);
+
+
+	/*int diff = xCurl->getReceivedHeaderSize() - response.header.length();
+
+	// Bug: This is running multiple times
+	if (diff) {
+		response.header = response.header.substr(0, xCurl->getReceivedHeaderSize());
+	}*/
+
 	printf("%s", chunk.c_str());
 	
-	XCurl *xCurl = ((XCurl*)xCurlInstance);
-	printf("%ld", xCurl->getReceivedHeaderSize());
+	//
+	//printf("%ld", xCurl->getReceivedHeaderSize());
+	//response.body.append(chunk.c_str());
 }
 
 int main()
@@ -22,9 +41,11 @@ int main()
 	xCurl->setRequestMethod("POST");
 
 	xCurl->setWriteFunction(&writeFunction);
-	//xCurl->exec();
+	xCurl->exec();
 
-	printf("%s", xCurl->getExec().c_str());
+	//printf("%s", response.body.c_str());
+
+	//printf("%s", xCurl->getExec().c_str());
 	//xCurl->exec();
 
 	//char *info[128];
