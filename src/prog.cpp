@@ -4,7 +4,12 @@
 #include <stdio.h>
 #include "headers/XCurl.hpp"
 
-int chunks;
+void writeFunction(string chunk, void *xCurlInstance) {
+	printf("%s", chunk.c_str());
+	
+	XCurl *xCurl = ((XCurl*)xCurlInstance);
+	printf("%ld", xCurl->getReceivedHeaderSize());
+}
 
 int main()
 {
@@ -16,7 +21,8 @@ int main()
 	xCurl->addRequestHeader("Test", "12345");
 	xCurl->setRequestMethod("POST");
 
-	//xCurl->setWriteFunction(&writeFunction);
+	xCurl->setWriteFunction(&writeFunction);
+	//xCurl->exec();
 
 	printf("%s", xCurl->getExec().c_str());
 	//xCurl->exec();
@@ -34,8 +40,8 @@ int main()
 	printf("Download size: %i", xCurl->getDownloadSize());
 	printf("\n");
 
-	printf("Chunks: %i", chunks);
-	printf("\n");
+	//printf("Chunks: %i", chunks);
+	//printf("\n");
 
 	//xCurl->getInfo();
 

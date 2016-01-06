@@ -152,8 +152,15 @@ class XCurl
 		//delete this; // Automatically clean up
 	}
 
+	// TODO: Populate a struct
 	public: string getExec()
 	{
+		if (this->_writeFunction != NULL) {
+			printf("Cannot use this method after setWriteFunction() has been called");
+			throw std::exception();
+		}
+
+		/* clear the _write buffer */
 		this->_writeBuffer.empty();
 
 		this->setWriteFunction([](string chunk, void *pass){
@@ -164,17 +171,7 @@ class XCurl
 		});
 		this->exec();
 
-		//printf("%s", this->_writeBuffer.c_str());
-
 		return this->_writeBuffer.c_str();
-
-		/*void writeFunction(string chunk) {
-			printf("%s", chunk.c_str());
-
-			chunks++;
-		}*/
-
-		//return buffer;
 	}
 
 	public: long getReceivedHeaderSize()
