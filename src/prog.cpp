@@ -4,23 +4,21 @@
 #include <stdio.h>
 #include "headers/XCurl.hpp"
 
-void writeFunction(string chunk) {
-	printf("%s", chunk.c_str());
-}
+int chunks;
 
 int main()
 {
-	XCurl *xCurl = new XCurl("http://zenosmosis.com");
-	//XCurl *xCurl = new XCurl("http://localhost/XCurl/web/index.php");
+	//XCurl *xCurl = new XCurl("http://zenosmosis.com");
+	XCurl *xCurl = new XCurl("http://localhost/XCurl/web/index.php");
 
 	xCurl->setUserAgent("Mozilla");
 	xCurl->setUserPassword("admin", "password");
 	xCurl->addRequestHeader("Test", "12345");
 	xCurl->setRequestMethod("POST");
 
-	xCurl->setWriteFunction(&writeFunction);
+	//xCurl->setWriteFunction(&writeFunction);
 
-	xCurl->exec();
+	printf("%s", xCurl->getExec().c_str());
 	//xCurl->exec();
 
 	//char *info[128];
@@ -34,6 +32,9 @@ int main()
 	printf("Total time: %f", xCurl->getTotalTime());
 	printf("\n");
 	printf("Download size: %i", xCurl->getDownloadSize());
+	printf("\n");
+
+	printf("Chunks: %i", chunks);
 	printf("\n");
 
 	//xCurl->getInfo();

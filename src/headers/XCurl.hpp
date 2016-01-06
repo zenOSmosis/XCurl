@@ -13,7 +13,8 @@ class XCurl
 {
 	private: CURL *_curl;
 			 struct curl_slist *_requestHeaders;
-			 void (*_writeFunction)(string chunk);
+			 void (*_writeFunction)(string chunk, void *pass);
+			 string _writeBuffer;
 
 	/**
 	* The constructor.
@@ -36,7 +37,7 @@ class XCurl
 		this->setURL(url);
 	}
 
-	public: void setWriteFunction(void (*callback)(string chunk))
+	public: void setWriteFunction(void (*callback)(string chunk, void *pass))
 	{
 		this->_writeFunction = callback;
 	}
@@ -123,13 +124,12 @@ class XCurl
 	    string chunk((char*)source_p,realsize);
 	    //printf("%s", chunk.c_str());
 	    if (((XCurl*)dest_p)->_writeFunction) {
-	    	((XCurl*)dest_p)->_writeFunction(chunk.c_str());
+	    	((XCurl*)dest_p)->_writeFunction(chunk.c_str(), dest_p);
 	    }
 
 	    //*((stringstream*)dest_p) << chunk;
 	    return realsize;
 	}
-				
 
 	public: void exec()
 	{
@@ -150,6 +150,31 @@ class XCurl
 		}
 
 		//delete this; // Automatically clean up
+	}
+
+	public: string getExec()
+	{
+		this->_writeBuffer.empty();
+
+		this->setWriteFunction([](string chunk, void *pass){
+			//printf("%s", chunk.c_str());
+			//printf("%s", buffer.c_str());
+			((XCurl*)pass)->_writeBuffer.append(chunk);
+			//printf("%lu", ((XCurl*)pass)->getResponseCode());
+		});
+		this->exec();
+
+		//printf("%s", this->_writeBuffer.c_str());
+
+		return this->_writeBuffer.c_str();
+
+		/*void writeFunction(string chunk) {
+			printf("%s", chunk.c_str());
+
+			chunks++;
+		}*/
+
+		//return buffer;
 	}
 
 	public: long getReceivedHeaderSize()
