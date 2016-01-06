@@ -1,5 +1,6 @@
 #include <curl/curl.h>
 #include <string>
+#include <sstream>
 
 using namespace std;
 
@@ -7,7 +8,13 @@ using namespace std;
 class XCurl
 {
 	private: CURL *_curl;
-			 struct curl_slist *_requestHeaders; // Ref: http://curl.haxx.se/libcurl/c/httpcustomheader.html
+			 struct curl_slist *_requestHeaders;
+			 void (*_writeFunction)(char *buffer);
+
+	public: void setWriteFunction(void (*callback)(char *buffer))
+	{
+		this->_writeFunction = callback;
+	}
 
 	/**
 	* The constructor.
@@ -101,15 +108,81 @@ class XCurl
 		return false;
 	}
 
+	private: std::string _readBuffer;
+
+	private: size_t _execWriteFunction(char *ptr, size_t size, size_t nmemb, void *parent) {
+		//((std::string*)userdata)->append((char*)ptr, size * nmemb);
+
+		//XCurl *scope = ((XCurl*)parent);
+
+		size_t realsize = size * nmemb;
+
+		//char *sub = &ptr;
+
+		//printf("%s", sub[0]);
+
+		const char *filename = "/tmp/curl";
+		const char *mode = "w+";
+
+		FILE *fHandle = fopen(filename, mode);
+		//}
+
+		//printf("%lu", size);
+
+		fwrite(ptr, size, nmemb, fHandle);
+
+		fclose(fHandle);
+
+		//stream = fmemeopen(buffer, strlen(buffer), 'r')
+
+		//FILE *fmemopen(void *restrict buf, size_t size, const char *restrict mode) {
+
+		//}
+
+		//fwrite(ptr, size, nmemb, scope->_readBuffer);
+
+		//printf("%s", *ptr[0]);;
+
+		//string buffer;
+
+		//buffer.append((char*)ptr, realsize);
+
+		//printf("%s", buffer.c_str());
+
+		//for (int c = 0; c<realsize; c++)
+	   //{
+	        /* Append this data to the string */
+	        //this->_data.push_back(buf[c]);
+	   	//	temp.push_back(ptr[c]);
+
+	    //}
+
+   		//((XCurl*)parent)->_readBuffer.append(ptr, realsize);
+		//if (((XCurl*)parent)->_writeFunction) {
+			//((XCurl*)parent)->_writeFunction(*ptr);
+		//}
+
+
+	    return realsize; //tell curl how many bytes we handled
+	}
+
+
+
 	public: void exec()
 	{
-
 		if (this->_curl) {
+			this->_readBuffer.clear();
+
 			/* temporarily outputting response headers */
-			curl_easy_setopt(this->_curl, CURLOPT_HEADER, true);
+			//curl_easy_setopt(this->_curl, CURLOPT_HEADER, true);
 
 			CURLcode res;
 
+			// The callback approach below seems to not utilize the correct scope
+			curl_easy_setopt(this->_curl, CURLOPT_WRITEFUNCTION, &XCurl::_execWriteFunction);
+			curl_easy_setopt(this->_curl, CURLOPT_WRITEDATA, this);
+
+			/* Perform the request */
 			res = curl_easy_perform(this->_curl);
 
 			curl_easy_cleanup(this->_curl);
@@ -127,7 +200,6 @@ class XCurl
 		return sizep;
 	}
 
-	// TODO: Copy the pointer value and return
 	public: string getEffectiveURL()
 	{
 		char *info[128];

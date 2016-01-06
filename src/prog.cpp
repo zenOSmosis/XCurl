@@ -4,15 +4,23 @@
 #include <stdio.h>
 #include "headers/XCurl.hpp"
 
+void writeFunction(char *buffer)
+{
+	//printf("%s", &buffer);
+}
+
 int main()
 {
-	XCurl *xCurl = new XCurl("http://zenosmosis.com");
-	//XCurl *xCurl = new XCurl("http://localhost/XCurl/web/index.php");
+	//XCurl *xCurl = new XCurl("http://zenosmosis.com");
+	XCurl *xCurl = new XCurl("http://localhost/XCurl/web/index.php");
 
 	xCurl->setUserAgent("Mozilla");
 	xCurl->setUserPassword("admin", "password");
 	xCurl->addRequestHeader("Test", "12345");
 	xCurl->setRequestMethod("POST");
+
+
+	xCurl->setWriteFunction(&writeFunction);
 
 	xCurl->exec();
 	//xCurl->exec();
