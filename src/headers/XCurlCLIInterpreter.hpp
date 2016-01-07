@@ -22,10 +22,12 @@ class XCurlCLIInterpreter : public XCurl
             exit(1);
         }
         
+        std::string requestMethod = root.get("requestMethod", "ASCII").asString();
+        this->setRequestMethod(requestMethod);
+        
         std::string url = root.get("url", "ASCII").asString();      
         this->setURL(url);
         
-  
         Json::Value headers = root["headers"];
         for (Json::ValueIterator itr = headers.begin(); itr != headers.end(); itr++)
         {
@@ -34,6 +36,9 @@ class XCurlCLIInterpreter : public XCurl
             
             this->addRequestHeader(key.asString().c_str(), value.asString().c_str());
         }
+        
+        std::string userAgent = root.get("userAgent", "ASCII").asString();
+        this->setUserAgent(userAgent);
         
         printf("%s", url.c_str());
         // terminate
