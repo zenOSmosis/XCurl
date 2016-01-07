@@ -36,10 +36,10 @@ int main(int argc, char *argv[])
 	//XCurl *xCurl = new XCurl("http://zenosmosis.com");
 	XCurl *xCurl = new XCurlCLIInterpreter(configPath);
 
-	xCurl->setUserAgent("Mozilla");
-	xCurl->setUserPassword("admin", "password");
-	xCurl->addRequestHeader("Test", "12345");
-	xCurl->setRequestMethod("POST");
+	//xCurl->setUserAgent("Mozilla");
+	//xCurl->setUserPassword("admin", "password");
+	//xCurl->addRequestHeader("Test", "12345");
+	//xCurl->setRequestMethod("POST");
 
 	xCurl->setWriteFunction(&writeFunction);
 	xCurl->exec();
