@@ -22,7 +22,7 @@ class XCurl
 {
 	private: CURL *_curl;
 			 struct curl_slist *_requestHeaders;
-			 void (*_writeFunction)(string chunk, void *pass);
+			 void (*_writeFunction)(string chunk, XCurl *instance);
 
 			 int _writeChunkCount;
 			 string _writeBuffer;
@@ -62,7 +62,7 @@ class XCurl
     	curl_slist_free_all(this->_requestHeaders);
 	}
 
-	public: void setWriteFunction(void (*callback)(string chunk, void *pass))
+	public: void setWriteFunction(void (*callback)(string chunk, XCurl *instance))
 	{
 		this->_writeFunction = callback;
 	}
@@ -169,7 +169,7 @@ class XCurl
 
 	    if (self->_writeFunction) {
 	    	/* call the simplified write function callback */
-	    	self->_writeFunction(chunk.c_str(), dest_p);
+	    	self->_writeFunction(chunk.c_str(), self);
 	    }
 
 	   	/* increment the write chunk count */
@@ -210,10 +210,10 @@ class XCurl
 		/* clear the _write buffer */
 		this->_writeBuffer.empty();
 
-		this->setWriteFunction([](string chunk, void *pass){
+		this->setWriteFunction([](string chunk, XCurl *instance){
 			//printf("%s", chunk.c_str());
 			//printf("%s", buffer.c_str());
-			((XCurl*)pass)->_writeBuffer.append(chunk);
+			((XCurl*)instance)->_writeBuffer.append(chunk);
 			//printf("%lu", ((XCurl*)pass)->getResponseCode());
 		});
 

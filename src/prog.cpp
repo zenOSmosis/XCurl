@@ -10,10 +10,8 @@ struct {
 	int _chunkCount;
 } response;
 
-void writeFunction(string chunk, void *xCurlInstance) {
+void writeFunction(string chunk, XCurl *xCurl) {
 	//response._chunkCount++;
-
-	XCurl *xCurl = ((XCurl*)xCurlInstance);
 
 
 	/*int diff = xCurl->getReceivedHeaderSize() - response.header.length();
