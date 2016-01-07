@@ -1,6 +1,3 @@
-// Motivation for doing this: Because stream processing via PHP is probably very inefficent.
-// Plus, I want to get better at C++.
-
 #include <stdio.h>
 #include "headers/XCurlCLIInterpreter.hpp"
 
