@@ -2,7 +2,7 @@
 // Plus, I want to get better at C++.
 
 #include <stdio.h>
-#include "headers/XCurl.hpp"
+#include "headers/XCurlCLIInterpreter.hpp"
 
 struct {
 	string body;
@@ -28,10 +28,13 @@ void writeFunction(string chunk, XCurl *xCurl) {
 	//response.body.append(chunk.c_str());
 }
 
-int main()
+int main(int argc, char *argv[])
 {
-	//XCurl *xCurl = new XCurl("http://zenosmosis.com");
-	XCurl *xCurl = new XCurl("http://localhost/XCurl/web/index.php");
+    // Total number of arguments is argc
+     std::string configPath = argv[1];
+    
+	//XCurl *xCurl = new XCurlCLIInterpreter("http://zenosmosis.com");
+	XCurl *xCurl = new XCurlCLIInterpreter(configPath);
 
 	xCurl->setUserAgent("Mozilla");
 	xCurl->setUserPassword("admin", "password");

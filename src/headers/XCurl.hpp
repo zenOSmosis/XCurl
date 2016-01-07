@@ -14,6 +14,7 @@
 #include <boost/foreach.hpp>
 #include <boost/tokenizer.hpp>
 
+// TODO: Remove namespace declarations
 using namespace std;
 using namespace boost;
 
@@ -178,7 +179,7 @@ class XCurl
 	    return realsize;
 	}
 
-	public: void exec()
+	public: virtual void exec()
 	{
 		if (this->_curl) {
 
