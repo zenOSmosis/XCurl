@@ -1,4 +1,5 @@
 // TODO: Enable connection reutilization and unset any counts, etc. on re-utilization
+// TODO: Include ability to process stream data
 
 #include <curl/curl.h>
 #include <curl/easy.h>
@@ -14,27 +15,22 @@
 #include <boost/foreach.hpp>
 #include <boost/tokenizer.hpp>
 
-// TODO: Remove namespace declarations
-using namespace std;
-using namespace boost;
-
-// TODO: Include ability to process stream data
 class XCurl
 {
 	private: CURL *_curl;
 			 struct curl_slist *_requestHeaders;
-			 void (*_writeFunction)(string chunk, XCurl *instance);
+			 void (*_writeFunction)(std::string chunk, XCurl *instance);
 
 			 int _writeChunkCount;
-			 string _writeBuffer;
+			 std::string _writeBuffer;
 
-			 string _responseHeadersRaw;
+			 std::string _responseHeadersRaw;
 			 std::vector<std::string> _responseHeaderLineTokens;
 
 	/**
 	* The constructor.
 	*/
-	public: XCurl(string url)
+	public: XCurl(std::string url)
 	{
 		// Initialize the write callback
 		this->setWriteFunction(NULL);
@@ -63,14 +59,14 @@ class XCurl
     	curl_slist_free_all(this->_requestHeaders);
 	}
 
-	public: void setWriteFunction(void (*callback)(string chunk, XCurl *instance))
+	public: void setWriteFunction(void (*callback)(std::string chunk, XCurl *instance))
 	{
 		this->_writeFunction = callback;
 	}
 
-	public: bool addRequestHeader(string key, string value)
+	public: bool addRequestHeader(std::string key, std::string value)
 	{
-		string concat = key + ": " + value;
+		std::string concat = key + ": " + value;
 
 		this->_requestHeaders = curl_slist_append(this->_requestHeaders, concat.c_str());
 		//printf("%s", concat.c_str());
@@ -83,7 +79,7 @@ class XCurl
 		return false;
 	}
 
-	public: bool setUserAgent(string value)
+	public: bool setUserAgent(std::string value)
 	{
 		return this->addRequestHeader("User-Agent", value);
 	}
@@ -101,7 +97,7 @@ class XCurl
 
 	}*/
 
-	public: bool setRequestMethod(string requestMethod)
+	public: bool setRequestMethod(std::string requestMethod)
 	{
 		if (curl_easy_setopt(this->_curl, CURLOPT_CUSTOMREQUEST, requestMethod.c_str())) {
 			return true;
@@ -110,7 +106,7 @@ class XCurl
 		return false;
 	}
 
-	public: bool setURL(string url)
+	public: bool setURL(std::string url)
 	{
 		if (curl_easy_setopt(this->_curl, CURLOPT_URL, url.c_str())) {
 			return true;
@@ -122,9 +118,9 @@ class XCurl
 	/**
 	* Ref: http://curl.haxx.se/libcurl/c/CURLOPT_USERPWD.html
 	*/
-	public: bool setUserPassword(string username, string password)
+	public: bool setUserPassword(std::string username, std::string password)
 	{
-		string userpass = username + ":" + password;
+		std::string userpass = username + ":" + password;
 
 		if (curl_easy_setopt(this->_curl, CURLOPT_USERPWD, userpass.c_str())) {
 			return true;
@@ -141,7 +137,7 @@ class XCurl
 		int realsize=size*nitems;
 
 		/* convert buffer into a string */
-		string chunk((char*)buffer,realsize);
+		std::string chunk((char*)buffer,realsize);
 
 		/* append to _responseHeadersRaw property */
 		((XCurl*)dest_p)->_responseHeadersRaw.append(chunk);
@@ -166,7 +162,7 @@ class XCurl
 	   	}
 
 	    /* convert source_p into a string */
-	    string chunk((char*)source_p,realsize);
+	    std::string chunk((char*)source_p,realsize);
 
 	    if (self->_writeFunction) {
 	    	/* call the simplified write function callback */
@@ -201,7 +197,7 @@ class XCurl
 		//delete this; // Automatically clean up
     }
 
-	public: string getExec()
+	public: std::string getExec()
 	{
 		if (this->_writeFunction != NULL) {
 			printf("Cannot use this method after setWriteFunction() has been called");
@@ -211,7 +207,7 @@ class XCurl
 		/* clear the _write buffer */
 		this->_writeBuffer.empty();
 
-		this->setWriteFunction([](string chunk, XCurl *instance){
+		this->setWriteFunction([](std::string chunk, XCurl *instance){
 			//printf("%s", chunk.c_str());
 			//printf("%s", buffer.c_str());
 			((XCurl*)instance)->_writeBuffer.append(chunk);
@@ -234,13 +230,13 @@ class XCurl
 		return sizep;
 	}
 
-	public: string getEffectiveURL()
+	public: std::string getEffectiveURL()
 	{
 		char *info[128];
 
 		curl_easy_getinfo(this->_curl, CURLINFO_EFFECTIVE_URL, &info);
 
-		return string(*info);
+		return std::string(*info);
 	}
 
 	public: long getResponseCode()

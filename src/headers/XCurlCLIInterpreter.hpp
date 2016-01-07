@@ -6,12 +6,10 @@
 #include <fstream>
 #include <string>
 
-
 class XCurlCLIInterpreter : public XCurl
 {
     public: XCurlCLIInterpreter(std::string configPath) : XCurl("")
 	{
-        
         Json::Value root;   // will contains the root value after parsing.
         Json::Reader reader;
         std::ifstream test(configPath, std::ifstream::binary);

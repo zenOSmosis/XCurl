@@ -1,11 +1,7 @@
 #include <stdio.h>
 #include "headers/XCurlCLIInterpreter.hpp"
 
-struct {
-	string body;
-	//string header;
-	int _chunkCount;
-} response;
+using namespace std;
 
 void writeFunction(string chunk, XCurl *xCurl) {
 	//response._chunkCount++;
