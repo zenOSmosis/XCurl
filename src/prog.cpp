@@ -4,21 +4,8 @@
 using namespace std;
 
 void writeFunction(string chunk, XCurl *xCurl) {
-	//response._chunkCount++;
-
-
-	/*int diff = xCurl->getReceivedHeaderSize() - response.header.length();
-
-	// Bug: This is running multiple times
-	if (diff) {
-		response.header = response.header.substr(0, xCurl->getReceivedHeaderSize());
-	}*/
-
+    /* print the chunk to stdout */
 	printf("%s", chunk.c_str());
-	
-	//
-	//printf("%ld", xCurl->getReceivedHeaderSize());
-	//response.body.append(chunk.c_str());
 }
 
 int main(int argc, char *argv[])
