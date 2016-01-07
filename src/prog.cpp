@@ -33,7 +33,7 @@ int main(int argc, char *argv[])
     // Total number of arguments is argc
      std::string configPath = argv[1];
     
-	//XCurl *xCurl = new XCurlCLIInterpreter("http://zenosmosis.com");
+	//XCurl *xCurl = new XCurl("http://zenosmosis.com");
 	XCurl *xCurl = new XCurlCLIInterpreter(configPath);
 
 	xCurl->setUserAgent("Mozilla");
