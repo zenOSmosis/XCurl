@@ -51,11 +51,6 @@ class XCurl
 		this->setURL(url);
 	}
 
-	public: void setWriteFunction(void (*callback)(string chunk, void *pass))
-	{
-		this->_writeFunction = callback;
-	}
-
 	/**
 	* The destructor.
 	*/
@@ -65,6 +60,11 @@ class XCurl
 
 		/* free the custom headers */ 
     	curl_slist_free_all(this->_requestHeaders);
+	}
+
+	public: void setWriteFunction(void (*callback)(string chunk, void *pass))
+	{
+		this->_writeFunction = callback;
 	}
 
 	public: bool addRequestHeader(string key, string value)
@@ -157,6 +157,8 @@ class XCurl
 
 	   	/* determine first instance of chunk write */
 	   	if (self->_writeChunkCount == 0) {
+            // TODO: Replace with g_strsplit () from glib.h (GNU C Library)
+            
 	   		/* split the response headers into lines */
 		   	std::string str = self->_responseHeadersRaw;
 			split(self->_responseHeaderLineTokens, str, boost::algorithm::is_any_of("\n"));
@@ -196,7 +198,7 @@ class XCurl
 		}
 
 		//delete this; // Automatically clean up
-	}
+    }
 
 	public: string getExec()
 	{
