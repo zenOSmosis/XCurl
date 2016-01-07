@@ -1,3 +1,5 @@
+// TODO: Enable connection reutilization and unset any counts, etc. on re-utilization
+
 #include <curl/curl.h>
 #include <curl/easy.h>
 #include <curl/curlbuild.h>
@@ -5,8 +7,15 @@
 #include <sstream>
 #include <iostream>
 #include <cstring>
+#include <boost/algorithm/string/split.hpp>
+#include <boost/algorithm/string/classification.hpp>
+#include <boost/regex.hpp>
+#include <boost/algorithm/string/regex.hpp>
+#include <boost/foreach.hpp>
+#include <boost/tokenizer.hpp>
 
 using namespace std;
+using namespace boost;
 
 // TODO: Include ability to process stream data
 class XCurl
@@ -14,8 +23,12 @@ class XCurl
 	private: CURL *_curl;
 			 struct curl_slist *_requestHeaders;
 			 void (*_writeFunction)(string chunk, void *pass);
+
+			 int _writeChunkCount;
 			 string _writeBuffer;
+
 			 string _responseHeadersRaw;
+			 std::vector<std::string> _responseHeaderLineTokens;
 
 	/**
 	* The constructor.
@@ -121,8 +134,6 @@ class XCurl
 
 	/**
 	* Populates the _responseHeaders.
-	*
-	* TODO: Clear if reusing the connection.
 	*/
 	private: static size_t _execHeaderCallback(char *buffer, size_t size, size_t nitems, void* dest_p)
 	{
@@ -140,25 +151,34 @@ class XCurl
 
 	// This is the function we pass to LC, which writes the output to a BufferStruct
 	private: static size_t _execWriteCallback(void* source_p,size_t size, size_t nmemb, void* dest_p){
-	    int realsize=size*nmemb;
+	   	XCurl *self = ((XCurl*)dest_p);
+
+	   	int realsize = size * nmemb;
+
+	   	/* determine first instance of chunk write */
+	   	if (self->_writeChunkCount == 0) {
+	   		/* split the response headers into lines */
+		   	std::string str = self->_responseHeadersRaw;
+			split(self->_responseHeaderLineTokens, str, boost::algorithm::is_any_of("\n"));
+	   	}
 
 	    /* convert source_p into a string */
 	    string chunk((char*)source_p,realsize);
 
-	    //printf("%s", chunk.c_str());
-	    if (((XCurl*)dest_p)->_writeFunction) {
-	    	((XCurl*)dest_p)->_writeFunction(chunk.c_str(), dest_p);
+	    if (self->_writeFunction) {
+	    	/* call the simplified write function callback */
+	    	self->_writeFunction(chunk.c_str(), dest_p);
 	    }
 
-	    //*((stringstream*)dest_p) << chunk;
+	   	/* increment the write chunk count */
+	   	self->_writeChunkCount++;
+
 	    return realsize;
 	}
 
 	public: void exec()
 	{
 		if (this->_curl) {
-			/* temporarily outputting response headers */
-			//curl_easy_setopt(this->_curl, CURLOPT_HEADER, true);
 
 			CURLcode res;
 
@@ -178,7 +198,6 @@ class XCurl
 		//delete this; // Automatically clean up
 	}
 
-	// TODO: Populate a struct
 	public: string getExec()
 	{
 		if (this->_writeFunction != NULL) {
@@ -195,8 +214,11 @@ class XCurl
 			((XCurl*)pass)->_writeBuffer.append(chunk);
 			//printf("%lu", ((XCurl*)pass)->getResponseCode());
 		});
+
+		/* execute the request */
 		this->exec();
 
+		/* return the write buffer as a string */
 		return this->_writeBuffer.c_str();
 	}
 
