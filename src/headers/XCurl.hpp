@@ -1,5 +1,6 @@
 // TODO: Enable connection reutilization and unset any counts, etc. on re-utilization
 // TODO: Include ability to process stream data
+// TODO: Remove all unnecessary header includes
 
 #include <curl/curl.h>
 #include <curl/easy.h>

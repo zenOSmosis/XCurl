@@ -1,10 +1,11 @@
+// TODO: Remove all unnecessary header includes
+
 #include <string>
 #include "XCurl.hpp"
 #include "dist/jsoncpp.cpp"
 #include "dist/json/json.h"
 #include <iostream>
 #include <fstream>
-#include <string>
 
 class XCurlCLIInterpreter : public XCurl
 {
