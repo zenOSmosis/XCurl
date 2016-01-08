@@ -1,5 +1,4 @@
 // TODO: Enable connection reutilization and unset any counts, etc. on re-utilization
-// TODO: Include ability to process stream data
 // TODO: Remove all unnecessary header includes
 
 #include <curl/curl.h>
@@ -60,12 +59,18 @@ class XCurl
     	curl_slist_free_all(this->_requestHeaders);
 	}
 
-	public: void setWriteFunction(void (*callback)(std::string chunk, XCurl *instance))
+	/**
+    * Executed when the call is executed via this->exec().
+    */
+    public: void setWriteFunction(void (*callback)(std::string chunk, XCurl *instance))
 	{
 		this->_writeFunction = callback;
 	}
 
-	public: bool addRequestHeader(std::string key, std::string value)
+	/**
+    * Adds a request header.
+    */
+    public: bool addRequestHeader(std::string key, std::string value)
 	{
 		std::string concat = key + ": " + value;
 
@@ -80,24 +85,19 @@ class XCurl
 		return false;
 	}
 
-	public: bool setUserAgent(std::string value)
+    /**
+    * Sets the user agent.
+    */
+    public: bool setUserAgent(std::string value)
 	{
 		return this->addRequestHeader("User-Agent", value);
 	}
 
-	/**
-	* Ref: http://curl.haxx.se/libcurl/c/curl_easy_setopt.html
-	*/
-	/*public: bool setOpt()
-	{
-
-	}*/
-
-	/*public: char getOpt()
-	{
-
-	}*/
-
+    /**
+    * Sets the request method.
+    *
+    * Ref: http://curl.haxx.se/libcurl/c/CURLOPT_CUSTOMREQUEST.html
+    */
 	public: bool setRequestMethod(std::string requestMethod)
 	{
 		if (curl_easy_setopt(this->_curl, CURLOPT_CUSTOMREQUEST, requestMethod.c_str())) {
@@ -107,6 +107,11 @@ class XCurl
 		return false;
 	}
 
+    /**
+    * Provide the URL to use in the request.
+    *
+    * Ref: http://curl.haxx.se/libcurl/c/CURLOPT_URL.html
+    */
 	public: bool setURL(std::string url)
 	{
 		if (curl_easy_setopt(this->_curl, CURLOPT_URL, url.c_str())) {
@@ -117,6 +122,8 @@ class XCurl
 	}
 
 	/**
+    * Sets the username and password to use in authentication.
+    *
 	* Ref: http://curl.haxx.se/libcurl/c/CURLOPT_USERPWD.html
 	*/
 	public: bool setUserPassword(std::string username, std::string password)
@@ -131,7 +138,7 @@ class XCurl
 	}
 
 	/**
-	* Populates the _responseHeaders.
+	* Populates the this->_responseHeaders.
 	*/
 	private: static size_t _execHeaderCallback(char *buffer, size_t size, size_t nitems, void* dest_p)
 	{
@@ -147,7 +154,11 @@ class XCurl
 		return nitems * size;
 	}
 
-	// This is the function we pass to LC, which writes the output to a BufferStruct
+    /**
+    * This method is passed directly to the libcurl library, which writes the output to a BufferStruct.
+    *
+    * self->_writeFunction() is run within this class
+    */
 	private: static size_t _execWriteCallback(void* source_p,size_t size, size_t nmemb, void* dest_p){
 	   	XCurl *self = ((XCurl*)dest_p);
 
@@ -157,8 +168,9 @@ class XCurl
 	   	if (self->_writeChunkCount == 0) {
             // TODO: Replace with g_strsplit () from glib.h (GNU C Library)
             
-	   		/* split the response headers into lines */
+	   		
 		   	std::string str = self->_responseHeadersRaw;
+            /* split the response headers into lines and write as tokens */
 			split(self->_responseHeaderLineTokens, str, boost::algorithm::is_any_of("\n"));
 	   	}
 
@@ -176,7 +188,10 @@ class XCurl
 	    return realsize;
 	}
 
-	public: virtual void exec()
+	/**
+    * Executes the curl request.
+    */
+    public: virtual void exec()
 	{
 		if (this->_curl) {
 
@@ -194,10 +209,13 @@ class XCurl
 
 			curl_easy_cleanup(this->_curl);
 		}
-
-		//delete this; // Automatically clean up
     }
 
+    /**
+    * Returns a write buffer populated from exec().
+    *
+    * Note, currently it cannot run after setWriteFunction() has been called, as it sets its own.
+    */
 	public: std::string getExec()
 	{
 		if (this->_writeFunction != NULL) {
@@ -222,6 +240,11 @@ class XCurl
 		return this->_writeBuffer.c_str();
 	}
 
+    /**
+    * Get size of retrieved headers.
+    *
+    * Ref: http://curl.haxx.se/libcurl/c/CURLINFO_HEADER_SIZE.html
+    */
 	public: long getReceivedHeaderSize()
 	{
 		long sizep;
@@ -231,7 +254,15 @@ class XCurl
 		return sizep;
 	}
 
-	public: std::string getEffectiveURL()
+	/**
+    * Get the last used URL.
+    *
+    * Note: In cases when you've asked libcurl to follow redirects,
+    * it may very well not be the same value you set with CURLOPT_URL.
+    *
+    * Ref: http://curl.haxx.se/libcurl/c/CURLINFO_EFFECTIVE_URL.html
+    */
+    public: std::string getEffectiveURL()
 	{
 		char *info[128];
 
@@ -240,6 +271,11 @@ class XCurl
 		return std::string(*info);
 	}
 
+    /**
+    * Get the last response code.
+    *
+    * Ref: http://curl.haxx.se/libcurl/c/CURLINFO_RESPONSE_CODE.html
+    */
 	public: long getResponseCode()
 	{
 		long codep;
@@ -249,7 +285,12 @@ class XCurl
 		return (long)codep;
 	}
 
-	public: double getTotalTime()
+	/**
+    * Get total time of previous transfer.
+    *
+    * Ref: http://curl.haxx.se/libcurl/c/CURLINFO_TOTAL_TIME.html
+    */
+    public: double getTotalTime()
 	{
 		double timep;
 
@@ -259,7 +300,11 @@ class XCurl
 	}
 
 	/**
-	* Note: Returns an integer, as opposed to the decimal in CURLINFO_SIZE_DOWNLOAD
+    * Get the number of downloaded bytes.
+    *
+	* Note: Returns an integer, as opposed to the decimal in CURLINFO_SIZE_DOWNLOAD.
+    *
+    * Ref: http://curl.haxx.se/libcurl/c/CURLINFO_SIZE_DOWNLOAD.html
 	*/
 	public: int getDownloadSize()
 	{
